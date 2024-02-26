@@ -35,9 +35,11 @@ def draw_text(text, font, text_col, x, y):
     img = font.render(str(text), True, text_col)
     win.blit(img, (x, y))
 
-def draw_info(speed1, speed2):
-    draw_text("Object Speed: ", text_font, WHITE, 0, 450)
-    draw_text(speed1, text_font, WHITE, 170, 450)
+def draw_info(speed1, speed2, speed3):
+    draw_text("Object Speed: ", text_font, WHITE, 0, 400)
+    draw_text(speed1, text_font, WHITE, 170, 400)
+    draw_text("Orbit Escape Velocity: ", text_font, WHITE, 0, 450)
+    draw_text(speed3, text_font, WHITE, 250, 450)
     draw_text("Required Speed for Orbit: ", text_font, WHITE, 0, 500)
     draw_text(speed2, text_font, WHITE, 300, 500)
 
@@ -51,7 +53,7 @@ class Planet:
     def draw(self):
         win.blit(PLANET, (self.x - PLANET_RADIUS, self.y - PLANET_RADIUS))
 
-class Spacecraft:
+class CelestialBody:
     def __init__(self, x, y, vel_x, vel_y, mass):
         self.x = x
         self.y = y
@@ -85,14 +87,16 @@ def create_body(location, mouse):
     m_x, m_y = mouse
     vel_x = (m_x - t_x) / VEL_SCALE
     vel_y = (m_y - t_y) / VEL_SCALE
-    obj = Spacecraft(t_x, t_y, vel_x, vel_y, BODY_MASS)
+    obj = CelestialBody(t_x, t_y, vel_x, vel_y, BODY_MASS)
     return obj
 
 def solve_for_orbit(orbit_radius):
     orbital_speed = math.sqrt((G*PLANET_MASS)/(orbit_radius+PLANET_RADIUS))
     return orbital_speed
 
-
+def solve_for_escapespeed(orbit_radius):
+    espcape_speed = math.sqrt((2*(G*PLANET_MASS))/(orbit_radius+PLANET_RADIUS))
+    return espcape_speed
 
 def main():
     running = True
@@ -129,7 +133,8 @@ def main():
             orbit_radius = math.sqrt((obj.x - planet.x)**2 + (obj.y - planet.y)**2)
             orbital_speed = solve_for_orbit(orbit_radius)
             user_input_speed = math.sqrt((obj.vel_x)**2 + (obj.vel_y)**2)
-            draw_info(user_input_speed, orbital_speed)
+            escape_speed = solve_for_escapespeed(orbit_radius)
+            draw_info(user_input_speed, orbital_speed, escape_speed)
             obj.draw()
             obj.move(planet)
 
@@ -141,7 +146,7 @@ def main():
                 objects.remove(obj)
 
             if orbiting:
-                print("")
+                draw_text("Orbit Achieved",text_font, WHITE, 500, 500)
                 
                 
 
