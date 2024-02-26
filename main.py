@@ -10,9 +10,6 @@ win = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Orbital Gravity Simulation")
 my_font = pygame.font.SysFont('Comic Sans MS', 30)
 
-
-
-
 # Declare some assumptions about the involved bodies here
 PLANET_MASS = 100
 BODY_MASS = 5
@@ -31,10 +28,12 @@ BLUE = (0, 0, 255)
 
 text_font = pygame.font.SysFont("Arial", 30)
 
+# Function to add text to screen
 def draw_text(text, font, text_col, x, y):
     img = font.render(str(text), True, text_col)
     win.blit(img, (x, y))
 
+# Function that calls draw_text to display orbit calculation values
 def draw_info(speed1, speed2, speed3):
     draw_text("Object Speed: ", text_font, WHITE, 0, 400)
     draw_text(speed1, text_font, WHITE, 170, 400)
@@ -44,6 +43,7 @@ def draw_info(speed1, speed2, speed3):
     draw_text(speed2, text_font, WHITE, 300, 500)
 
 
+# Class for Planet (Jupiter)
 class Planet:
     def __init__(self, x, y, mass):
         self.x = x
@@ -53,6 +53,7 @@ class Planet:
     def draw(self):
         win.blit(PLANET, (self.x - PLANET_RADIUS, self.y - PLANET_RADIUS))
 
+# Class for moving body
 class CelestialBody:
     def __init__(self, x, y, vel_x, vel_y, mass):
         self.x = x
@@ -90,10 +91,12 @@ def create_body(location, mouse):
     obj = CelestialBody(t_x, t_y, vel_x, vel_y, BODY_MASS)
     return obj
 
+# Solves for speed required to orbit, using v = √(G*M(of planet)/Radius between planet and body)
 def solve_for_orbit(orbit_radius):
     orbital_speed = math.sqrt((G*PLANET_MASS)/(orbit_radius+PLANET_RADIUS))
     return orbital_speed
 
+# Solves for escape velocity, using v = √2*G*M(of planet)/Radius between planet and body
 def solve_for_escapespeed(orbit_radius):
     espcape_speed = math.sqrt((2*(G*PLANET_MASS))/(orbit_radius+PLANET_RADIUS))
     return espcape_speed
@@ -124,12 +127,13 @@ def main():
 
         win.blit(BG, (0, 0))
         
-
+        # Draws user input
         if temp_obj_pos:
             pygame.draw.line(win, WHITE, temp_obj_pos, mouse_pos, 2)
             pygame.draw.circle(win, PINK, temp_obj_pos, BODY_RADIUS)
         
         for obj in objects[:]:
+            # Solves for required values using functions defined above
             orbit_radius = math.sqrt((obj.x - planet.x)**2 + (obj.y - planet.y)**2)
             orbital_speed = solve_for_orbit(orbit_radius)
             user_input_speed = math.sqrt((obj.vel_x)**2 + (obj.vel_y)**2)
@@ -138,6 +142,7 @@ def main():
             obj.draw()
             obj.move(planet)
 
+            # Determines case
             off_screen = obj.x < 0 or obj.x > WIDTH or obj.y < 0 or obj.y > HEIGHT
             collided = orbit_radius <= PLANET_RADIUS
             orbiting = orbital_speed == user_input_speed
