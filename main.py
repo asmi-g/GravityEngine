@@ -19,8 +19,8 @@ PLANET_RADIUS = 50
 BODY_RADIUS = 5
 VEL_SCALE = 100
 
-BG = pygame.transform.scale(pygame.image.load("background.jpg"), (WIDTH, HEIGHT))
-PLANET = pygame.transform.scale(pygame.image.load("jupiter.png"), (PLANET_RADIUS * 2, PLANET_RADIUS * 2))
+BG = pygame.transform.scale(pygame.image.load("Assets/background.jpg"), (WIDTH, HEIGHT))
+PLANET = pygame.transform.scale(pygame.image.load("Assets/jupiter.png"), (PLANET_RADIUS * 2, PLANET_RADIUS * 2))
 
 WHITE = (255, 255, 255)
 PINK = (255, 192, 203)
